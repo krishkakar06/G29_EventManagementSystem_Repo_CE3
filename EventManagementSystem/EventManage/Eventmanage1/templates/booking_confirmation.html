@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmation{% endblock %}
+
+{% block styles %}
+<style>
+    .confirmation-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .success-card {
+        border-left: 4px solid #28a745;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .booking-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .booking-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .detail-icon {
+        width: 24px;
+        text-align: center;
+        color: #4361ee;
+        margin-right: 12px;
+    }
+    
+    .booking-detail {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .booking-detail:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .cta-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .btn-cta {
+        padding: 12px 24px;
+        font-weight: 500;
+        border-radius: 8px;
+        margin: 0 8px;
+        min-width: 180px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .booking-id {
+        background-color: #e9ecef;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-family: monospace;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container container py-5">
+    <!-- Success Alert -->
+    <div class="success-card alert alert-success mb-5">
+        <div class="d-flex flex-column align-items-center">
+            <div class="mb-3">
+                <i class="fas fa-check-circle fa-3x"></i>
+            </div>
+            <h2 class="mb-3 text-center">Booking Confirmed!</h2>
+            <p class="mb-0">Your booking reference: <span class="booking-id">{{ booking.id }}</span></p>
+        </div>
+    </div>
+
+    <!-- Booking Details Card -->
+    <div class="booking-card card mb-5">
+        <div class="card-body p-4">
+            <h3 class="card-title mb-4 text-primary">{{ booking.event.title }}</h3>
+            
+            <div class="booking-details">
+                <div class="booking-detail">
+                    <i class="fas fa-calendar-day detail-icon"></i>
+                    <div>
+                        <strong>Event Date:</strong> {{ booking.event.date|date:"F j, Y" }}
+                    </div>
+                </div>
+                
+                <div class="booking-detail">
+                    <i class="fas fa-map-marker-alt detail-icon"></i>
+                    <div>
+                        <strong>Location:</strong> {{ booking.event.location }}
+                    </div>
+                </div>
+                
+                <div class="booking-detail">
+                    <i class="fas fa-ticket-alt detail-icon"></i>
+                    <div>
+                        <strong>Tickets Booked:</strong> {{ booking.tickets }}
+                    </div>
+                </div>
+                
+                <div class="booking-detail">
+                    <i class="fas fa-rupee-sign detail-icon"></i>
+                    <div>
+                        <strong>Total Amount:</strong> ₹{{ total_price }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cab Booking Prompt -->
+    <div class="cta-section text-center">
+        <h4 class="mb-3">Need transportation to the event?</h4>
+        <p class="mb-4">We can arrange a cab for you to ensure you arrive comfortably.</p>
+        <div class="d-flex justify-content-center flex-wrap">
+            <a href="{% url 'book_cab' %}?event_id={{ booking.event.id }}" class="btn btn-success btn-cta mb-2">
+                <i class="fas fa-car me-2"></i> Book a Cab
+            </a>
+            <a href="{% url 'browse_events' %}" class="btn btn-outline-secondary btn-cta mb-2">
+                <i class="fas fa-times me-2"></i> No Thanks
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

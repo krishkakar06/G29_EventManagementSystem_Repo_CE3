@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Update Event | Planorama{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0 text-center">
+                        <i class="fas fa-edit me-2"></i>Update Event
+                    </h2>
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Flash Messages -->
+                    {% include 'includes/messages.html' %}
+
+                    <!-- Event Update Form -->
+                    <form method="POST" action="{% url 'update_event' event.id %}" enctype="multipart/form-data"
+                        class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <!-- Title -->
+                            <div class="col-12">
+                                <label for="id_title" class="form-label">Event Title*</label>
+                                <input type="text" class="form-control {% if form.title.errors %}is-invalid{% endif %}"
+                                    id="id_title" name="title" value="{{ form.title.value|default:event.title }}"
+                                    required>
+                                {% for error in form.title.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label for="id_description" class="form-label">Description*</label>
+                                <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                                    id="id_description" name="description" rows="4" required
+                                    minlength="50">{{ form.description.value|default:event.description }}</textarea>
+                                {% for error in form.description.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Date and Type -->
+                            <div class="col-md-6">
+                                <label for="id_date" class="form-label">Event Date & Time*</label>
+                                <input type="date" class="form-control {% if form.date.errors %}is-invalid{% endif %}"
+                                    id="id_date" name="date"
+                                    value="{{ form.date.value|default:event.date|date:'Y-m-d' }}" required>
+                                {% for error in form.date.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_type" class="form-label">Event Type*</label>
+                                <select class="form-select {% if form.type.errors %}is-invalid{% endif %}" id="id_type"
+                                    name="type" required>
+                                    <option value="">Select event type</option>
+                                    {% for value, label in form.fields.type.choices %}
+                                    <option value="{{ value }}" {% if form.type.value == value or event.type == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                {% for error in form.type.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="col-12">
+                                <label for="id_image" class="form-label">Event Image</label>
+                                <div class="file-upload-wrapper">
+                                    {% if event.image %}
+                                    <div class="current-image mb-3">
+                                        <p class="mb-1">Current Image:</p>
+                                        <img src="{{ event.image.url }}" class="img-thumbnail"
+                                            style="max-height: 200px;">
+                                    </div>
+                                    {% endif %}
+                                    <input type="file"
+                                        class="form-control {% if form.image.errors %}is-invalid{% endif %}"
+                                        id="id_image" accept="image/*">
+                                    <input type="hidden" id="image_url" name="image_url" value="{{ event.image|default:'' }}">
+                                    {% for error in form.image.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                    <div class="preview mt-3 text-center" id="imagePreview" style="display: none;">
+                                        <img id="previewImage" src="#" alt="Preview" class="img-thumbnail"
+                                            style="max-height: 200px;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-2" id="removeImage">
+                                            <i class="fas fa-trash me-1"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Price and Location -->
+                            <div class="col-md-6">
+                                <label for="id_price" class="form-label">Ticket Price (₹)*</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number"
+                                        class="form-control {% if form.price.errors %}is-invalid{% endif %}"
+                                        id="id_price" name="price" value="{{ form.price.value|default:event.price }}"
+                                        min="0" step="0.01" required>
+                                    {% for error in form.price.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="id_location" class="form-label">Event Location*</label>
+                                <input type="text"
+                                    class="form-control {% if form.location.errors %}is-invalid{% endif %}"
+                                    id="id_location" name="location"
+                                    value="{{ form.location.value|default:event.location }}" required>
+                                {% for error in form.location.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'browse_events' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Update Event
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Image preview and upload functionality
+    document.getElementById('id_image').addEventListener('change', function (event) {
+        const preview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const file = event.target.files[0];
+        const imageUrlInput = document.getElementById('image_url');
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                preview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+
+            // Upload file to API
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('http://127.0.0.1:5000/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.image) {
+                    imageUrlInput.value = data.image;
+                } else if (data.error) {
+                    alert('Image upload failed: ' + data.error);
+                    imageUrlInput.value = '';
+                }
+            })
+            .catch(error => {
+                alert('Image upload error: ' + error);
+                imageUrlInput.value = '';
+            });
+        }
+    });
+
+    // Remove image button
+    document.getElementById('removeImage')?.addEventListener('click', function () {
+        document.getElementById('id_image').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('image_url').value = '';
+    });
+
+    // Date picker min value (today)
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateField = document.getElementById('id_date');
+        if (dateField) {
+            const now = new Date();
+            const timezoneOffset = now.getTimezoneOffset() * 60000;
+            const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 16);
+            dateField.min = localISOTime;
+        }
+    });
+
+    // Form validation
+    (function () {
+        'use strict';
+
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

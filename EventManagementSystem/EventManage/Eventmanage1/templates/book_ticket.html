@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Ticket for {{ event.title }} | Planorama{% endblock %}
+
+{% block styles %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+<style>
+  h1, .event-summary h2 {
+    font-family: 'Anton', sans-serif;
+    font-weight: bold;
+    color: #003c2f;
+  }
+  h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .booking-container {
+    max-width: 960px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #fafafa;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease-in-out;
+  }
+  .event-summary {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    border: 1px solid #dee2e6;
+  }
+  .event-summary h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .event-summary p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 1rem;
+  }
+  .booking-form {
+    padding: 2rem;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    border: 1px solid #dee2e6;
+  }
+  .form-label {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  .form-control {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  }
+  .btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+  }
+  .btn-primary:hover {
+    background-color: #1e40af;
+    border-color: #1e3a8a;
+  }
+  .btn-outline-secondary {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+  }
+  .btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    color: #343a40;
+  }
+  .card-img-top {
+    max-height: 250px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  .alert {
+    font-size: 0.95rem;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .alert-info {
+    background-color: #e9f5ff;
+    color: #0c63e4;
+    border: 1px solid #b6e0fe;
+  }
+  .card-header h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  @media (max-width: 768px) {
+    .booking-container {
+      padding: 1.25rem;
+    }
+    .event-summary,
+    .booking-form {
+      padding: 1.25rem;
+    }
+    .btn-primary,
+    .btn-outline-secondary {
+      font-size: 0.95rem;
+      padding: 0.6rem;
+    }
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center" style="font-family: 'Anton', sans-serif; font-size: 2.5rem; line-height: 1.2; color: #003c2f; font-weight: bold;">Book Tickets for {{ event.title }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                {% if event.image_url %}
+                <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="card-text">{{ event.description }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Date:</strong> {{ event.date|date:"M d, Y" }}</li>
+                        <li class="list-group-item"><strong>Location:</strong> {{ event.location }}</li>
+                        <li class="list-group-item"><strong>Price per ticket:</strong> ₹{{ event.price }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Booking Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="tickets" class="form-label">Number of Tickets</label>
+                            <input type="number" class="form-control" id="tickets" name="tickets" min="1" value="1" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                        <label for="user_name" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="user_name" name="user_name" value="{{ request.user.get_full_name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="user_email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="user_email" name="user_email" value="{{ request.user.email }}" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Confirm Booking</button>
+                            <a href="{% url 'browse_events' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Planorama{% endblock %}
+
+{% block styles %}
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  
+  <style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      margin-top: 300px;
+    }
+
+    .circle {
+      animation: slideIn 0.5s forwards;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #fffaf6;
+      color: #222;
+    }
+    .trending-events {
+      text-align: center;
+      padding-top: 8px;
+    }
+    .trending-events h2,.about-us-section h2,.why-choose-us h2 {
+      font-family: 'Anton', sans-serif;
+      font-size: 3rem;
+      line-height: 1.51;
+      margin: 0;
+      color: rgba(238, 7, 7, 0.666); font-weight: bold;
+   }
+
+
+    .card {
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: rgb(255, 240, 240);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: rgb(255, 127, 148);
+  margin-bottom: 20px;
+}
+.free-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #FFB7E8; /* Soft red */
+  color: white;
+  font-size: 0.8rem;
+  padding: 5px 15px;
+  border-radius: 50px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10; /* Ensure it stays on top */
+}
+
+/* Card hover effect for interactivity */
+.card:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
+/* Card image styling */
+.card img {
+  border-radius: 15px;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Card body layout and styling */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  color: rgb(255, 127, 148);
+}
+
+/* Title and text styling inside card */
+.card-body .card-title,
+.card-body .card-text {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: rgb(255, 127, 148);
+}
+
+/* Action link inside card */
+.card-body a {
+  margin-top: auto;
+  background-color: rgb(151, 61, 61);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+/* Hover effect for action link */
+.card-body a:hover {
+  background-color: rgb(207, 118, 118);
+  cursor: pointer;
+}
+
+    .flash-messages .container {
+      margin-top: 20px;
+    }
+
+    .dropdown-item {
+      color: black !important;
+    }
+
+    .circle {
+      margin: 15px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .circle:hover {
+      transform: scale(1.1);
+    }
+
+    .circle a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .circle i {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    
+.highlight-pink {
+  background-color: #ffb7e8;
+  display: inline;
+  color: #3a0d0d;
+  padding: 0 4px;
+}
+
+    .benefit-item {
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+
+    .benefit-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .benefit-item i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #e74c3c;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <!-- Carousel Section -->
+  <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="margin: 15px 20px;">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="https://cdn.evbstatic.com/s3-build/fe/build/images/bb8b2f325ba34836306ead1ce1e3abfd-valentine_nightlife_desktop.webp" class="d-block w-100" alt="..." />
+      </div>
+      <div class="carousel-item">
+        <img src="https://cdn.evbstatic.com/s3-build/fe/build/images/4fc883eca2b00c60d09ef5ae96c1bab0-city_browse_us_uk_ie_ca_desktop.webp" class="d-block w-100" alt="..." />
+      </div>
+      <div class="carousel-item">
+        <img src="https://cdn.evbstatic.com/s3-build/fe/build/images/cd6df335d9d4dbb4a0c3c9ea4f78542a-food_and_drink_desktop.webp" class="d-block w-100" alt="..." />
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <!-- Icon Circles Section -->
+  <div class="icon-circles" style="display: flex; flex-wrap: wrap; justify-content: center;">
+    <div class="circle">
+      <a href="{% url 'browse_events' %}#music">
+        <i class="fas fa-music" style="font-size: 40px"></i>
+        <p>Music</p>
+      </a>
+    </div>
+    <div class="circle">
+      <a href="{% url 'browse_events' %}#food">
+        <i class="fas fa-utensils" style="font-size: 40px"></i>
+        <p>Food</p>
+      </a>
+    </div>
+    <div class="circle">
+      <a href="{% url 'browse_events' %}#business">
+        <i class="fas fa-briefcase" style="font-size: 40px"></i>
+        <p>Business</p>
+      </a>
+    </div>
+    <div class="circle">
+      <a href="{% url 'browse_events' %}#dance">
+        <i class="fas fa-theater-masks" style="font-size: 40px"></i>
+        <p>Dance</p>
+      </a>
+    </div>
+    <div class="circle">
+      <a href="{% url 'browse_events' %}#education">
+        <i class="fa-solid fa-graduation-cap" style="font-size: 40px"></i>
+        <p>Education</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- Trending Events Section -->
+    <!-- Trending Events Section -->
+    <section class="trending-events">
+      <h2 style="color: red; font-weight: bold;">Top <span class="highlight-pink">
+         Trending Events </span>in India</h2>
+      <div class="row" style="padding: 20px;">
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Free</span>
+            <img src="{% static 'event1.jpg' %}" class="card-img-top" alt="Event 1">
+            <div class="card-body">
+              <h5 class="card-title">Ab India Karega Groww</h5>
+              <p class="card-text">Tomorrow 5:00 PM</p>
+              <p class="card-text"><small class="text-muted">JABALPUR</small></p>
+            
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Free</span>
+            <img src="{% static 'event2.jpg' %}" class="card-img-top" alt="Event 2">
+            <div class="card-body">
+              <h5 class="card-title">Unlock Your GRE Success</h5>
+              <p class="card-text">Monday 10:00 AM</p>
+              <p class="card-text"><small class="text-muted">INDORE</small></p>
+  
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+  
+          <div class="card">
+            <span class="badge free-badge">Free</span>
+            <img src="{% static 'event3.jpg' %}" class="card-img-top" alt="Event 3">
+            <div class="card-body">
+              <h5 class="card-title">Your Gateway to Dubai Real Estate</h5>
+              <p class="card-text">Feb 22 10:00 AM</p>
+              <p class="card-text"><small class="text-muted">BHOPAL</small></p>
+              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Limited Seats</span>
+            <img src="{% static 'event4.jpg' %}" class="card-img-top" alt="Event 4">
+            <div class="card-body">
+              <h5 class="card-title">Pool Party, Games, Belly & Pole Dance, Ramp Show, Buffet Dinner & Drinks</h5>
+              <p class="card-text">Feb 22 6:30 PM</p>
+              <p class="card-text"><small class="text-muted">INDORE</small></p>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="padding: 20px;">
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Free</span>
+            <img src="{% static 'event5.jpeg' %}" class="card-img-top" alt="Event 1">
+            <div class="card-body">
+              <h5 class="card-title">Exclusive Dubai Real Estate Insights</h5>
+              <p class="card-text">Feb 22 10:00 AM</p>
+              <p class="card-text"><small class="text-muted">BHOPAL</small></p>
+              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Limited Seats</span>
+            <img src="{% static 'event6.jpeg' %}" class="card-img-top" alt="Event 2">
+            <div class="card-body">
+              <h5 class="card-title">Wedding Syrup Fashion, Jewelry, Lifestyle Exhibition</h5>
+              <p class="card-text">March 1 11:00 AM</p>
+              <p class="card-text"><small class="text-muted">INDORE</small></p>
+            
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Free</span>
+            <img src="{% static 'event7.jpeg' %}" class="card-img-top" alt="Event 3">
+            <div class="card-body">
+              <h5 class="card-title">Solar Asia Expo 2025</h5>
+              <p class="card-text">March 21 11:00 AM</p>
+              <p class="card-text"><small class="text-muted">INDORE</small></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card">
+            <span class="badge free-badge">Exclusive</span>
+            <img src="{% static 'event8.jpeg' %}" class="card-img-top" alt="Event 4">
+            <div class="card-body">
+              <h5 class="card-title">Jewellery World</h5>
+              <p class="card-text">Oct 3 10:00 AM</p>
+              <p class="card-text"><small class="text-muted">INDORE</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+
+  <!-- About Us Section -->
+  <section class="about-us-section" id="about-us">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="flex: 1; padding-right: 40px;">
+        <h2>About Us – <span class="highlight-pink">Planorama</span></h2>
+        <p>Welcome to Planorama, your go-to platform for discovering and booking tickets to the most exciting events!
+          Whether you're looking for concerts, festivals, sports matches, theater shows, or corporate events, we bring
+          you the best experiences at your fingertips.</p>
+      </div>
+      <div style="flex: 1;">
+        <img src="{% static 'aboutus.jpeg' %}" alt="About Us Image" style="width: 100%; border-radius: 15px;">
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="why-choose-us">
+    <h2>Why <span class="highlight-pink">Choose</span> Us?</h2>
+    <div class="benefits-grid">
+      <div class="benefit-item">
+        <i class="fas fa-ticket-alt"></i>
+        <h3>Wide Selection</h3>
+        <p>From local gigs to international concerts, we cover it all.</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-mouse-pointer"></i>
+        <h3>User-Friendly Platform</h3>
+        <p>Easy navigation, quick bookings, and instant confirmations.</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Trusted & Secure</h3>
+        <p>Verified events and a safe payment system.</p>
+      </div>
+      <div class="benefit-item">
+        <i class="fas fa-headset"></i>
+        <h3>24/7 Support</h3>
+        <p>We're here to help with any queries or ticketing concerns.</p>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const benefitItems = document.querySelectorAll('.benefit-item');
+      const aboutSection = document.querySelector('#about-us');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+          }
+        });
+      }, {
+        threshold: 0.5
+      });
+
+      benefitItems.forEach(item => {
+        observer.observe(item);
+      });
+      observer.observe(aboutSection);
+    });
+  </script>
+{% endblock %}

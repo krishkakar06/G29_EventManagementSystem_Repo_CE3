@@ -1,0 +1,527 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Sales | Planorama{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #f05537;
+        --primary-dark: #d44c32;
+        --primary-light: #ffefec;
+        --text: #2d3748;
+        --text-light: #4a5568;
+        --text-lighter: #718096;
+        --border: #e2e8f0;
+        --bg-light: #f8fafc;
+        --bg-lighter: #f8f9fa;
+        --radius: 8px;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Base Styles */
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text);
+    }
+
+    /* Hero Section */
+    .sales-hero {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 60px 20px 40px;
+        text-align: center;
+    }
+
+    .sales-hero h1 {
+        font-size: 2.75rem;
+        margin-bottom: 1.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        background: linear-gradient(to right, var(--primary), #ff8a00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .sales-hero p {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        color: var(--text-light);
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .support-note {
+        border: 2px solid var(--border);
+        padding: 20px;
+        margin: 40px auto;
+        border-radius: var(--radius);
+        background: var(--bg-light);
+        max-width: 600px;
+    }
+
+    /* Form Container */
+    .contact-form-container {
+        max-width: 800px;
+        margin: 0 auto 80px;
+        padding: 0 20px;
+    }
+
+    .contact-form {
+        background: #fff;
+        border-radius: var(--radius);
+        padding: 40px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.75rem;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: var(--bg-light);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-light);
+        background-color: #fff;
+    }
+
+    textarea.form-control {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    /* Button */
+    .contact-btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        width: 100%;
+        transition: var(--transition);
+        margin-top: 1.5rem;
+        letter-spacing: 0.5px;
+    }
+
+    .contact-btn:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: var(--bg-lighter);
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .stats-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+
+    .stat {
+        padding: 20px;
+    }
+
+    .stat h1 {
+        font-size: 3.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+    }
+
+    .stat p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    /* Trusted By Section */
+    .trusted-section {
+        margin: 80px auto;
+        max-width: 800px;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .trusted-section h2 {
+        font-size: 2rem;
+        margin-bottom: 40px;
+        color: var(--text);
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .trusted-section h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--primary);
+    }
+
+    .logos-banner {
+        max-width: 100%;
+        height: auto;
+        margin: 30px 0;
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: var(--transition);
+    }
+
+    .logos-banner:hover {
+        filter: grayscale(0);
+        opacity: 1;
+    }
+
+    /* Features Section */
+    .features-section {
+        margin: 80px auto;
+        padding: 0 20px;
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+    }
+
+    .feature-card {
+        background: #fff;
+        border-radius: var(--radius);
+        padding: 40px 30px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        transition: var(--transition);
+        text-align: center;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        color: var(--text);
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    .feature-card p {
+        color: var(--text-light);
+        line-height: 1.7;
+    }
+
+    /* Links */
+    .phone-link, .support-link {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        border-bottom: 2px solid transparent;
+    }
+
+    .phone-link:hover, .support-link:hover {
+        color: var(--primary-dark);
+        border-bottom-color: currentColor;
+    }
+
+    /* Form Grid */
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .sales-hero h1 {
+            font-size: 2.25rem;
+        }
+        
+        .sales-hero p {
+            font-size: 1rem;
+        }
+        
+        .contact-form {
+            padding: 30px 20px;
+        }
+        
+        .stat h1 {
+            font-size: 2.75rem;
+        }
+    }
+</style>
+
+<!-- Main Content -->
+<div class="sales-hero">
+    <h1>Reach 90 million unique ticket-buyers on Planorama</h1>
+    <p>
+        Tap into the world's largest events marketplace and reach more consumers looking for events like yours
+        with our industry-leading event marketing tools. Ready to bring your next event to life?
+    </p>
+    <p>
+        Our dedicated <strong>Sales Team</strong> is here to show you how Planorama can amplify your events and
+        help you achieve your event goals. Reach out to us directly at <a href="tel:+16286001786" class="phone-link">+1 628-600-1786</a> 
+        to get started.
+    </p>
+    <div class="support-note">
+        <p>Current Planorama customers can <a href=""></a>contact customer support</a>. Your support options are based on your plan or package.</p>
+    </div>
+</div>
+
+
+<!-- Form Section -->
+<div class="contact-form-container">
+    <form method="POST" action="{% url 'contact_sales' %}" class="contact-form" novalidate>
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-4">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label">First name *</label>
+                <input type="text" 
+                       id="{{ form.first_name.id_for_label }}" 
+                       name="{{ form.first_name.name }}"
+                       value="{{ form.first_name.value|default:'' }}"
+                       class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                       required>
+                {% if form.first_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.first_name.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last name</label>
+                <input type="text" 
+                       id="{{ form.last_name.id_for_label }}" 
+                       name="{{ form.last_name.name }}"
+                       value="{{ form.last_name.value|default:'' }}"
+                       class="form-control {% if form.last_name.errors %}is-invalid{% endif %}">
+                {% if form.last_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.last_name.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Work Email *</label>
+            <input type="email" 
+                   id="{{ form.email.id_for_label }}" 
+                   name="{{ form.email.name }}"
+                   value="{{ form.email.value|default:'' }}"
+                   class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                   required>
+            {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.email.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.company_name.id_for_label }}" class="form-label">Company name</label>
+            <input type="text" 
+                   id="{{ form.company_name.id_for_label }}" 
+                   name="{{ form.company_name.name }}"
+                   value="{{ form.company_name.value|default:'' }}"
+                   class="form-control {% if form.company_name.errors %}is-invalid{% endif %}">
+            {% if form.company_name.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.company_name.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.organization_type.id_for_label }}" class="form-label">Organization Type</label>
+            <select id="{{ form.organization_type.id_for_label }}" 
+                    name="{{ form.organization_type.name }}" 
+                    class="form-select {% if form.organization_type.errors %}is-invalid{% endif %}">
+                <option value="">Select organization type</option>
+                <option value="sole_proprietorship" {% if form.organization_type.value == 'sole_proprietorship' %}selected{% endif %}>Sole Proprietorship</option>
+                <option value="partnership" {% if form.organization_type.value == 'partnership' %}selected{% endif %}>Partnership</option>
+                <option value="corporation" {% if form.organization_type.value == 'corporation' %}selected{% endif %}>Corporation</option>
+                <option value="llc" {% if form.organization_type.value == 'llc' %}selected{% endif %}>Limited Liability Company (LLC)</option>
+                <option value="nonprofit" {% if form.organization_type.value == 'nonprofit' %}selected{% endif %}>Nonprofit Organization</option>
+            </select>
+            {% if form.organization_type.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.organization_type.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone number *</label>
+            <input type="tel" 
+                   id="{{ form.phone_number.id_for_label }}" 
+                   name="{{ form.phone_number.name }}"
+                   value="{{ form.phone_number.value|default:'' }}"
+                   class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}"
+                   required>
+            {% if form.phone_number.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.phone_number.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+            <input type="text" 
+                   id="{{ form.country.id_for_label }}" 
+                   name="{{ form.country.name }}"
+                   value="{{ form.country.value|default:'' }}"
+                   class="form-control {% if form.country.errors %}is-invalid{% endif %}" 
+                   placeholder="Enter your country">
+            {% if form.country.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.country.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.tickets_planned.id_for_label }}" class="form-label">How many paid tickets do you plan to sell?</label>
+                <input type="number" 
+                       id="{{ form.tickets_planned.id_for_label }}" 
+                       name="{{ form.tickets_planned.name }}"
+                       value="{{ form.tickets_planned.value|default:'' }}"
+                       class="form-control {% if form.tickets_planned.errors %}is-invalid{% endif %}"
+                       min="0">
+                {% if form.tickets_planned.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.tickets_planned.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.average_cost.id_for_label }}" class="form-label">On average, what is the cost to attend your event?</label>
+                <input type="number" 
+                       id="{{ form.average_cost.id_for_label }}" 
+                       name="{{ form.average_cost.name }}"
+                       value="{{ form.average_cost.value|default:'' }}"
+                       class="form-control {% if form.average_cost.errors %}is-invalid{% endif %}"
+                       min="0"
+                       step="0.01">
+                {% if form.average_cost.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.average_cost.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.reason.id_for_label }}" class="form-label">Reason for getting in touch *</label>
+            <textarea id="{{ form.reason.id_for_label }}" 
+                      name="{{ form.reason.name }}"
+                      class="form-control {% if form.reason.errors %}is-invalid{% endif %}"
+                      required>{{ form.reason.value|default:'' }}</textarea>
+            {% if form.reason.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.reason.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="contact-btn">Submit Ticket →</button>
+    </form>
+</div>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat">
+            <h1>200M+</h1>
+            <p>searches from people looking for things to do on Planorama in 2022</p>
+        </div>
+        <div class="stat">
+            <h1>30%</h1>
+            <p>of total tickets sold are driven by Planorama discovery</p>
+        </div>
+        <div class="stat">
+            <h1>2X</h1>
+            <p>more the consumer reach of our closest competitor</p>
+        </div>
+    </div>
+</section>
+
+<!-- Trusted By Section -->
+<section class="trusted-section">
+    <h2>Trusted by</h2>
+    <img src="{% static 'logos.png' %}" alt="Trusted by these organizations" class="logos-banner">
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-container">
+        <div class="feature-card">
+            <h3>You've got the supply, we've got the demand</h3>
+            <p>Tap into Planorama's active event-going base of 90 million people. And directly connect with them using targeted marketing tools.</p>
+        </div>
+        <div class="feature-card">
+            <h3>The growth you want, the support you deserve</h3>
+            <p>Planorama powered—and supported—5 million events last year. Grow your business with our expert team by your side.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Seamless payments for them, early payouts for you</h3>
+            <p>Provide a fast, safe checkout experience for buyers, and access ticket revenue whenever you need it.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

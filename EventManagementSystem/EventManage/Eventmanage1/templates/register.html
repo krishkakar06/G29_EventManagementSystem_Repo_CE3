@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create an Account - Planorama{% endblock %}
+
+{% block styles %}
+  <style>
+    /* Improved registration page styles */
+    .registration-container {
+      min-height: calc(100vh - 120px); /* Account for header/footer */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, #f3c0c0, #f77777);
+      padding: 2rem 0;
+    }
+
+    .registration-card {
+      display: flex;
+      max-width: 1200px;
+      width: 90%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      background: white;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .image-section {
+      flex: 1;
+      background: url('https://img.freepik.com/premium-photo/female-motivational-speaker-stage-talking-about-how-success_146508-7259.jpg') no-repeat center center;
+      background-size: cover;
+      display: none; /* Hidden on mobile */
+    }
+
+    .form-title {
+      color: #e74c3c;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: #0267f4;
+      box-shadow: 0 0 0 0.2rem rgba(2, 103, 244, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #0267f4;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #1a73e8;
+      transform: translateY(-2px);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #0267f4;
+      font-weight: 600;
+    }
+
+    /* Show image on larger screens */
+    @media (min-width: 992px) {
+      .image-section {
+        display: block;
+      }
+    }
+
+    /* Improved error display */
+    .errorlist {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .is-invalid {
+      border-color: #e74c3c !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-container">
+  <div class="registration-card">
+    <div class="form-section">
+      <h2 class="form-title">Create an Account</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+          {{ form.password1.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+          {{ form.password2 }}
+          {{ form.password2.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.role.id_for_label }}">Register as:</label>
+          {{ form.role }}
+          {{ form.role.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Continue</button>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
+      </div>
+    </div>
+
+    <div class="image-section"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <!-- Additional form validation scripts if needed -->
+  <script>
+    // Add class to form fields with errors
+    document.addEventListener('DOMContentLoaded', function() {
+      const errorFields = document.querySelectorAll('.errorlist');
+      errorFields.forEach(errorField => {
+        const inputId = errorField.closest('.form-group').querySelector('input, select').id;
+        document.getElementById(inputId).classList.add('is-invalid');
+      });
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block styles %}
+<style>
+    :root {
+        --primary: #ff4646;
+        --primary-dark: #e63939;
+        --secondary: #d13434;
+        --accent: #ffebeb;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --border-radius: 12px;
+        --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .booking-container {
+        max-width: 1200px;
+    }
+
+    .booking-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        transition: var(--transition);
+        border-top: 4px solid var(--primary);
+    }
+
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(255, 70, 70, 0.15);
+    }
+
+    .card-header {
+        background: white;
+        color: var(--dark);
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header h3 {
+        color: black;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        height: 48px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(255, 70, 70, 0.2);
+    }
+
+    .btn-book {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: 8px;
+        transition: var(--transition);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-book:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 70, 70, 0.25);
+    }
+
+    .btn-book i {
+        margin-right: 8px;
+    }
+
+    .history-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        height: 100%;
+        border-top: 4px solid var(--secondary);
+    }
+
+    .history-header {
+        background-color: #f8f9fa;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .booking-details {
+        padding: 1.5rem;
+    }
+
+    .route-icon {
+        color: var(--primary);
+        margin-right: 8px;
+    }
+
+    .event-alert {
+        background-color: var(--accent);
+        border-left: 4px solid var(--primary);
+        border-radius: 4px;
+        color: var(--secondary);
+    }
+
+    .text-primary {
+        color: var(--primary) !important;
+    }
+
+    .btn-outline-primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    @media (max-width: 992px) {
+        .booking-card {
+            margin-bottom: 2rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-container container py-5">
+    <div class="row">
+        <!-- Booking Form -->
+        <div class="col-lg-7">
+            <div class="booking-card card">
+                <div class="card-header">
+                    <h3 class="mb-0"><i class="fas fa-taxi mr-2 text-primary"></i> Book Your Cab</h3>
+                </div>
+                <div class="card-body">
+                    {% if event %}
+                    <div class="alert event-alert mb-4">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        Booking for <strong>{{ event.title }}</strong> at <strong>{{ event.location }}</strong>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% if not event %}  <!-- Only show for direct bookings -->
+                        <div class="form-group mb-4">
+                            <label for="event_name" class="form-label">Event Name (Optional)</label>
+                            <input type="text" name="event_name" id="event_name" class="form-control" placeholder="Enter event name if applicable">
+                        </div>
+                        {% endif %}
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-4">
+                                <label for="pickup_location" class="form-label">Pickup Location</label>
+                                {% render_field form.pickup_location class="form-control" placeholder="Enter pickup address" %}
+                            </div>
+                            <div class="form-group col-md-6 mb-4">
+                                <label for="drop_location" class="form-label">Drop Location</label>
+                                {% render_field form.drop_location class="form-control" placeholder="Enter destination" %}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-4">
+                                <label for="pickup_time" class="form-label">Pickup Time</label>
+                                {% render_field form.pickup_time class="form-control" %}
+                            </div>
+                            <div class="form-group col-md-6 mb-4">
+                                <label for="passengers" class="form-label">Passengers</label>
+                                {% render_field form.passengers class="form-control" %}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-book mt-2">
+                            <i class="fas fa-car mr-2"></i> Confirm Booking
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking History -->
+        <div class="col-lg-5">
+            <div class="history-card card">
+                <div class="history-header">
+                    <h5 class="mb-0"><i class="fas fa-history mr-2 text-primary"></i> Your Recent Booking</h5>
+                </div>
+                <div class="booking-details">
+                    {% if previous_booking %}
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-map-marker-alt route-icon mt-1"></i>
+                        <div>
+                            {% if previous_booking.event %}
+                            <h6 class="mb-1">{{ previous_booking.event.title }}</h6>
+                            {% elif previous_booking.event_name %}
+                            <h6 class="mb-1">{{ previous_booking.event_name }}</h6>
+                            {% else %}
+                            <h6 class="mb-1">Regular Ride</h6>
+                            {% endif %}
+                            <p class="mb-1 text-muted">
+                                {{ previous_booking.pickup_location }} → 
+                                {{ previous_booking.drop_location }}
+                            </p>
+                            <small class="text-muted">
+                                <i class="far fa-clock mr-1"></i>
+                                {{ previous_booking.pickup_time|date:"M j, Y g:i A" }}
+                            </small>
+                        </div>
+                    </div>
+                    <a href="{% url 'cab_history' %}" class="btn btn-outline-primary btn-block mt-3">
+                        <i class="fas fa-list mr-2"></i> View All Bookings
+                    </a>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="far fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No previous bookings found</p>
+                        <a href="{% url 'cab_history' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-history mr-2"></i> Check History
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const eventSelector = document.getElementById('event-selector');
+    const dropLocation = document.getElementById('drop-location');
+    
+    if (eventSelector && dropLocation) {
+        eventSelector.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                dropLocation.value = selectedOption.dataset.location;
+            } else {
+                dropLocation.value = '';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

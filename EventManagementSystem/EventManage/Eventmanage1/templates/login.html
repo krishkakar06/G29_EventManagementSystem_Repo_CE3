@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Planorama{% endblock %}
+
+{% block styles %}
+<style>
+  /* Modern login page styles */
+  .login-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    padding: 2rem 0;
+  }
+
+  .login-card {
+    display: flex;
+    max-width: 1200px;
+    width: 90%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    background: white;
+    transition: transform 0.3s ease;
+  }
+
+  .login-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .form-section {
+    flex: 1;
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+  }
+
+  .image-section {
+    flex: 1;
+    background: url('{% static "loginimg.jpg" %}') no-repeat center center;
+    background-size: cover;
+    display: none; /* Hidden on mobile */
+  }
+
+  .login-title {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+    position: relative;
+  }
+
+  .login-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #3498db;
+    margin: 10px auto;
+    border-radius: 2px;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    padding: 12px 20px;
+    border: 2px solid #ecf0f1;
+    transition: all 0.3s;
+    width: 100%;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+  }
+
+  .form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
+  }
+
+  .btn-login {
+    background-color: #3498db;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-login:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #7f8c8d;
+  }
+
+  .register-link a {
+    color: #3498db;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .register-link a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+  }
+
+  /* Error handling */
+  .errorlist {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .is-invalid {
+    border-color: #e74c3c !important;
+  }
+
+  .invalid-feedback {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Show image on larger screens */
+  @media (min-width: 992px) {
+    .image-section {
+      display: block;
+    }
+  }
+
+  /* Animation for form elements */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-group {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .form-group:nth-child(1) { animation-delay: 0.1s; }
+  .form-group:nth-child(2) { animation-delay: 0.2s; }
+  .btn-login { animation: fadeIn 0.5s ease 0.3s forwards; }
+  .register-link { animation: fadeIn 0.5s ease 0.4s forwards; }
+
+  .google-login-container {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .btn-google-login {
+    display: inline-block;
+    background-color: white;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-google-login:hover {
+    background-color: beige;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-google-login i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-card">
+    <div class="form-section">
+      <h2 class="login-title">Welcome Back</h2>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        <div class="text-center">
+          <p class="text-success">You're already logged in as <strong>{{ user.username }}</strong></p>
+          <a href="{% url 'logout' %}" class="btn-login">Logout</a>
+        </div>
+      {% else %}
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+        
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+        
+          <div class="form-group">
+            <label for="id_username">Username or Email</label>
+            <input type="text" name="username" id="id_username" 
+                   class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                   placeholder="Enter your username or email"
+                   required>
+            {% if form.username.errors %}
+              <div class="invalid-feedback">
+                {{ form.username.errors.0 }}
+              </div>
+            {% endif %}
+          </div>
+        
+          <div class="form-group">
+            <label for="id_password">Password</label>
+            <input type="password" name="password" id="id_password" 
+                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                   placeholder="Enter your password"
+                   required>
+            {% if form.password.errors %}
+              <div class="invalid-feedback">
+                {{ form.password.errors.0 }}
+              </div>
+            {% endif %}
+          </div>
+        
+          <button type="submit" class="btn-login">Login</button>
+        </form>
+
+        <div class="google-login-container">
+          <a href="{% url 'social:begin' 'google-oauth2' %}?prompt=select_account" class="btn-google-login">
+            <img src="{% static 'google.jpeg' %}" alt="Google Logo" style="height: 24px; margin-right: 8px;">
+            Login with Google
+          </a>
+        </div>
+
+        <div class="register-link">
+          Don't have an account? <a href="{% url 'register' %}">Sign up here</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="image-section"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Add animation class to invalid fields
+  document.addEventListener('DOMContentLoaded', function() {
+    const invalidFields = document.querySelectorAll('.is-invalid');
+    invalidFields.forEach(field => {
+      field.addEventListener('animationend', function() {
+        this.classList.add('animate__animated', 'animate__headShake');
+      });
+    });
+
+    // Remove animation after it completes
+    document.querySelectorAll('.animate__headShake').forEach(element => {
+      element.addEventListener('animationend', function() {
+        this.classList.remove('animate__headShake');
+      });
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add success message for Google login
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('google_login') === 'success') {
+      const successMessage = document.createElement('div');
+      successMessage.className = 'alert alert-success alert-dismissible fade show';
+      successMessage.role = 'alert';
+      successMessage.innerHTML = `
+        Successfully logged in with Google!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      `;
+      document.querySelector('.form-section').prepend(successMessage);
+    }
+  });
+</script>
+{% endblock %}

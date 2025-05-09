@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+  <div class="text-center mb-5">
+    <h2 class="font-weight-bold mb-3" style="font-weight: bolder;">Cab Booking History</h2>
+    <div class="title-divider mx-auto"></div>
+  </div>
+
+  {% if is_admin %}
+  <div class="container mb-4 d-flex justify-content-center">
+    <form method="GET" class="filter-form p-3 rounded-3 shadow-sm">
+      <div class="row align-items-center g-3">
+        <div class="col-md-8">
+          <label for="username" class="form-label fw-bold text-muted">Filter by User</label>
+          <div class="input-group">
+            <input type="text" name="username" id="username" class="form-control" value="{{ filter_username }}" placeholder="Enter username">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search me-1"></i> Search
+            </button>
+          </div>
+        </div>
+        {% if filter_username %}
+        <div class="col-md-4 text-end">
+          <a href="{% url 'cab_history' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-1"></i> Clear
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+  {% endif %}
+
+  {% if bookings %}
+  <div class="row g-4">
+    {% for booking in bookings %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-taxi text-primary me-2"></i>
+            {{ booking.pickup_location }} → {{ booking.drop_location }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-4">
+            <li class="mb-2">
+              <i class="far fa-clock text-muted me-2"></i>
+              <strong>Pickup:</strong> {{ booking.pickup_time|date:"M d, Y H:i" }}
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-users text-muted me-2"></i>
+              <strong>Passengers:</strong> {{ booking.passengers }}
+            </li>
+            {% if booking.event %}
+            <li class="mb-2">
+                <i class="far fa-calendar-alt text-muted me-2"></i>
+                <strong>Event:</strong> {{ booking.event.title }}
+            </li>
+            {% elif booking.event_name %}
+            <li class="mb-2">
+                <i class="far fa-calendar-alt text-muted me-2"></i>
+                <strong>Event:</strong> {{ booking.event_name }}
+            </li>
+            {% endif %}
+
+            <li>
+              <i class="far fa-calendar text-muted me-2"></i>
+              <strong>Booked:</strong> {{ booking.booked_at|date:"M d, Y H:i" }}
+            </li>
+          </ul>
+
+          {% if is_admin %}
+          <div class="d-flex align-items-center mb-3">
+            <span class="badge bg-light text-dark">
+              <i class="fas fa-user me-1"></i> {{ booking.user.username }}
+            </span>
+          </div>
+          {% endif %}
+
+          <div class="d-flex gap-2">
+            <a href="{% url 'update_cab_booking' booking.id %}" class="btn btn-sm btn-outline-primary flex-grow-1">
+              <i class="fas fa-edit me-1"></i> Update
+            </a>
+            <form action="{% url 'cancel_cab_booking' booking.id %}" method="post" class="flex-grow-1">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger w-100" 
+                onclick="return confirm('Are you sure you want to cancel this booking?');">
+                <i class="fas fa-times me-1"></i> Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <i class="far fa-calendar-alt fa-4x text-muted mb-4"></i>
+    <h5 class="text-muted">No cab bookings found</h5>
+    {% if not filter_username %}
+    <a href="{% url 'book_cab' %}" class="btn btn-primary mt-3">
+      <i class="fas fa-taxi me-2"></i> Book a Cab Now
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .title-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #ff4646, #ff6b6b);
+    margin-top: 1rem;
+  }
+  
+  .filter-form {
+    max-width: 600px;
+    background-color: transparent; /* Remove white background */
+    border: none; /* Remove border */
+    box-shadow: none;
+  }
+  
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 10px;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .list-unstyled li {
+    padding: 0.25rem 0;
+  }
+</style>
+
+{% endblock %}

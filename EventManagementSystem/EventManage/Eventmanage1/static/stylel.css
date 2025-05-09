@@ -1,0 +1,103 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(45deg, #f3c0c0, #f77777); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Image Section */
+.login-image {
+    background: url("static/loginimg.jpg") no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+}
+
+/* Form Styles */
+.container-fluid {
+    display: flex;
+    height: 90vh;
+    width: 80%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.left-side {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    backdrop-filter: blur(20px);
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+    padding: 40px;
+}
+
+.polygon-card {
+    width: 80%;
+    padding: 30px;
+    text-align: center;
+    color: black;
+}
+
+.form-control {
+    border-radius: 20px;
+    border: 1px solid rgba(15, 15, 15, 0.5);
+    padding: 10px;
+    margin: 10px 0;
+    background: transparent;
+    color: black;
+}
+
+.form-control::placeholder {
+    color: rgba(8, 8, 8, 0.7);
+}
+
+/* Buttons */
+.btn-primary {
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 1.1rem;
+    width: 100%;
+    background-color: #0267f4; 
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #4980ee;
+}
+.btn-outline-light {
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 1.1rem;
+    width: 100%;
+    border: 1px solid rgba(15, 15, 15, 0.5);
+    color: black;
+    background: transparent;
+}
+
+.btn-outline-light:hover {
+    background: lightgrey;
+    color: black;
+}
+
+/* "Don't have an account?" link */
+.text-dark {
+    color: black;
+    text-decoration: none;
+}
+
+.text-dark:hover {
+    color: #555; /* Light black */
+    text-decoration: underline;
+}
+
+
+
+
+

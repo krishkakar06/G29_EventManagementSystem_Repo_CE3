@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins&display=swap" rel="stylesheet" />
+<style>
+.page-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding-top: 40px;
+}
+.page-header h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 3.5rem;
+  line-height: 1.51;
+  color: #003c2f;
+  margin: 0;
+  font-weight: bold;
+}
+.highlight-pink {
+  background-color: #ffb7e8;
+  display: inline;
+  color: #3a0d0d;
+  padding: 0 4px;
+}
+.category-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  border: 2px solid #216b4b;
+  border-radius: 25px;
+  color: #216b4b;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  background: transparent;
+}
+.category-btn:hover {
+  background: #216b4b;
+  color: white;
+  transform: translateY(-2px);
+}
+.event-type-header {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.5rem;
+  color: #003c2f;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.search-container {
+  max-width: 500px;
+  margin: 0 auto 30px;
+}
+.search-container .input-group {
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.search-container .input-group-text {
+  background: #216b4b;
+  color: white;
+  border: none;
+}
+.search-container .form-control {
+  border: none;
+  padding: 12px 20px;
+}
+.search-container .form-control:focus {
+  box-shadow: none;
+  border-color: #216b4b;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Discover Amazing Events</h1>
+</div>
+
+<div class="search-container mb-3 d-flex justify-content-center">
+  <form method="get" class="input-group" style="max-width: 500px; width: 100%;">
+    <input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ request.GET.search }}">
+    <button type="submit" class="btn btn-primary" style="background-color: #216b4b; border-color: #216b4b; color: white;">Search</button>
+  </form>
+</div>
+
+{% if user.is_authenticated and user.profile.role == 'admin' %}
+<div class="text-center mb-3">
+  <a href="{% url 'create_event' %}" class="btn btn-primary">Create New Event</a>
+</div>
+{% endif %}
+
+{% for category in events %}
+    <h2 class="event-type-header" style="font-family: 'Anton', sans-serif; font-size: 3rem; line-height: 1.51; color: rgba(238, 7, 7, 0.666); font-weight: bold; text-align: center; margin-bottom: 30px;">
+      <span class="highlight-pink">{{ category.category|title }}</span> Events
+    </h2>
+    <div class="row">
+      {% for event in category.events %}
+      <div class="col-md-4 mb-4">
+        <div class="card" style="border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); background-color: rgb(255, 240, 240); color: rgb(255, 127, 148); display: flex; flex-direction: column; height: 100%;">
+          {% if event.image_url %}
+          <img src="{{ event.image_url }}" class="card-img-top" alt="{{ event.title }}" style="border-radius: 15px; height: 200px; object-fit: cover;">
+          {% else %}
+          <img src="http://localhost:5000/uploads/placeholder.jpg" class="card-img-top" alt="No image available" style="border-radius: 15px; height: 200px; object-fit: cover;">
+          {% endif %}
+          <div class="card-body d-flex flex-column justify-content-between" style="color: rgb(255, 127, 148);">
+            <h5 class="card-title" style="color: rgb(255, 127, 148); font-weight: 600;">{{ event.title }}</h5>
+            <p class="card-text">{{ event.description|truncatechars:100 }}</p>
+            <p class="text-muted">{{ event.date }} • {{ event.location }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-auto">
+              <span class="font-weight-bold" style="color: rgb(255, 127, 148); font-weight: 700;">₹{{ event.price }}</span>
+              <div>
+                {% if user.is_authenticated and user.profile.role == 'admin' %}
+                <a href="{% url 'update_event' event.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a href="{% url 'delete_event' event.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                {% endif %}
+                              {% if user.is_authenticated and user.profile.role == 'user' %}
+                              <a href="{% url 'book_ticket' event.id %}" class="btn btn-sm btn-primary" style="background-color: rgb(151, 61, 61); border: none; color: white; padding: 10px 15px; border-radius: 5px; font-size: 1rem; text-decoration: none;">Book Ticket</a>
+                              {% elif not user.is_authenticated %}
+                              <a href="{% url 'login' %}?next={% url 'book_ticket' event.id %}" class="btn btn-sm btn-warning">Login to Book</a>
+                              {% endif %}
+                          </div>
+                      </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}
